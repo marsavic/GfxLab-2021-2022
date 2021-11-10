@@ -1,0 +1,23 @@
+<component name="libraryTable">
+  <library name="object-instrument">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/checker-qual-3.8.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/error_prone_annotations-2.5.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/failureaccess-1.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/guava-30.1.1-jre.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/ikonli-core-12.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/ikonli-javafx-12.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/ikonli-materialdesign2-pack-12.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/j2objc-annotations-1.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javafx-base-17.0.1-win.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javafx-controls-17.0.1-win.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javafx-graphics-17.0.1-win.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javafx-swing-17.0.1-win.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jsr305-3.0.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/mars-bits_main.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/object-instruments_main.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
