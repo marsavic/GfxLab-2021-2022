@@ -9,7 +9,17 @@ import xyz.marsavic.gfxlab.gui.UtilsGL;
 
 public class ToneMappingFunctionSimple implements ToneMappingFunction {
 	
-	private ColorTransformForColorMatrix colorTransformForColorMatrix = new ColorTransformForColorMatrix.Multiply();
+	private final ColorTransformForColorMatrix colorTransformForColorMatrix;
+	
+	
+	public ToneMappingFunctionSimple(ColorTransformForColorMatrix colorTransformForColorMatrix) {
+		this.colorTransformForColorMatrix = colorTransformForColorMatrix;
+	}
+	
+	
+	public ColorTransformForColorMatrix colorTransformFactory() {
+		return colorTransformForColorMatrix;
+	}
 	
 	
 	@Override
@@ -25,8 +35,5 @@ public class ToneMappingFunctionSimple implements ToneMappingFunction {
 		});
 	}
 	
-	public ColorTransformForColorMatrix colorTransformFactory() {
-		return colorTransformForColorMatrix;
-	}
 	
 }

@@ -4,6 +4,7 @@ import xyz.marsavic.gfxlab.*;
 import xyz.marsavic.gfxlab.animation.*;
 import xyz.marsavic.gfxlab.graphics3d.RayTracer;
 import xyz.marsavic.gfxlab.graphics3d.raytracers.RayTracerTest;
+import xyz.marsavic.gfxlab.tonemapping.ColorTransformForColorMatrix;
 import xyz.marsavic.gfxlab.tonemapping.ToneMappingFunctionSimple;
 import xyz.marsavic.objectinstruments.annotations.GadgetDouble;
 
@@ -12,17 +13,21 @@ public class GfxLab {
 	
 	RayTracer rayTracer;
 	Animation<Matrix<Color>> animation;
+	ToneMappingFunction toneMappingFunction;
 	Animation<RawImage> toneMappedAnimation;
-
+	
+	
+	@GadgetDouble(p = 0, q = 5)
+	public double brightnessFactor = 1.0;
 	
 	@GadgetDouble(p = -2, q = 2)
 	public double planeY = -1.0;
 	
 	@GadgetDouble(p = 2, q = 20)
 	public double ballZ = 3;
-
 	
-
+	
+	
 	synchronized void setup() {
 		rayTracer = new RayTracerTest(planeY, ballZ);
 		
@@ -36,7 +41,11 @@ public class GfxLab {
 				)
 		;
 		
-		toneMappedAnimation = new ToneMapperPerFrame(animation, new ToneMappingFunctionSimple(), true);
+		toneMappingFunction = new ToneMappingFunctionSimple(
+				new ColorTransformForColorMatrix.Multiply(brightnessFactor)
+		);
+		
+		toneMappedAnimation = new ToneMapperPerFrame(animation, toneMappingFunction, true);
 	}
 	
 	
@@ -58,7 +67,7 @@ public class GfxLab {
 	// TODO Bug: not using the full cpu when the animation is AnimationColorSampling (for fast samplers).
 	
 	public synchronized void setAnimation(Animation<Matrix<Color>> animation) {
-		toneMappedAnimation = new ToneMapperPerFrame(animation, new ToneMappingFunctionSimple());
+		toneMappedAnimation = new ToneMapperPerFrame(animation, toneMappingFunction, true);
 	}
 	
 	
