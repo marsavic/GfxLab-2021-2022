@@ -39,7 +39,7 @@ public class Color {
 	
 	
 	public static Color hsb(double h, double s, double b) {
-		h = Numeric.mod1(h / 360.0);
+		h = Numeric.mod1(h);
 		int base = (int) (h * 6.0);
 		double f = h * 6.0 - base;
 		double p = b * (1.0 - s);

@@ -1,8 +1,10 @@
 package xyz.marsavic.gfxlab.animation;
 
 
+import xyz.marsavic.gfxlab.gui.UtilsGL;
 import xyz.marsavic.reactions.Dispatcher;
 import xyz.marsavic.reactions.Reactions;
+import xyz.marsavic.time.Profiler;
 
 
 /**
@@ -14,7 +16,7 @@ public abstract class Animation<F> {
 	
 	public abstract F frame(int iFrame);
 	
-	public void dispose() {};
+	public void dispose() {}
 	
 
 	protected final Dispatcher<EventAnimationUpdate> dispatcherAnimationUpdate = new Dispatcher<>();

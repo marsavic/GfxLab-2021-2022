@@ -16,4 +16,8 @@ public record EventAnimationUpdate(
 		this(iFrame, iFrame + 1);
 	}
 	
+	public boolean includesFrame(int i) {
+		return !(i < iFrameFrom) && (i < iFrameTo);
+	}
+	
 }

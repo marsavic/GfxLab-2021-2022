@@ -16,8 +16,8 @@ public class RayTracerTest extends RayTracer {
 	
 	
 	public RayTracerTest(double y, double z) {
-		 ball = Ball.cr(Vec3.xyz(0, 0, 10*z), 1);
-		 halfSpace = HalfSpace.pn(Vec3.xyz(0, -1+y, 0), Vec3.xyz(0, 1, 0));
+		 ball = Ball.cr(Vec3.xyz(0, 0, z), 1);
+		 halfSpace = HalfSpace.pn(Vec3.xyz(0, y, 0), Vec3.xyz(0, 1, 0));
 	}
 	
 	
@@ -26,7 +26,7 @@ public class RayTracerTest extends RayTracer {
 		Hit hit1 = ball.firstHit(ray, 0.0);
 		Hit hit2 = halfSpace.firstHit(ray, 0.0);
 		
-		double t = Math.min(hit1.t(), hit2.t());
+		double t = Math.min(Hit.t(hit1), Hit.t(hit2));
 		
 		return t == Double.POSITIVE_INFINITY ? Color.BLACK : Color.gray(1 / (1 + t));
 	}

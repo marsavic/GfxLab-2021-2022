@@ -6,7 +6,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import xyz.marsavic.gfxlab.RawImage;
-import xyz.marsavic.gfxlab.gui.UtilsFX;
+import xyz.marsavic.gfxlab.gui.UtilsGL;
 import xyz.marsavic.objectinstruments.instruments.ObjectInstrument;
 
 
@@ -29,8 +29,8 @@ public class InstrumentRawImage extends ObjectInstrument<RawImage> {
 	
 	@Override
 	protected void afterSetObject() {
-		if ((image == null) || !UtilsFX.imageSize(image).equals(object().size())) {
-			image = UtilsFX.createWritableImage(object().size());
+		if ((image == null) || !UtilsGL.imageSize(image).equals(object().size())) {
+			image = UtilsGL.createWritableImage(object().size());
 			imageView.setImage(image);
 		}
 		update();
@@ -39,7 +39,7 @@ public class InstrumentRawImage extends ObjectInstrument<RawImage> {
 	
 	@Override
 	public void update() {
-		UtilsFX.imageFromRawImage(image, object());
+		UtilsGL.imageFromRawImage(image, object());
 	}
 	
 	

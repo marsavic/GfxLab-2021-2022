@@ -4,7 +4,7 @@ import xyz.marsavic.functions.interfaces.Action1;
 import xyz.marsavic.geometry.Vector;
 import xyz.marsavic.gfxlab.Color;
 import xyz.marsavic.gfxlab.Matrix;
-import xyz.marsavic.utils.Utils;
+import xyz.marsavic.gfxlab.gui.UtilsGL;
 
 
 public class RendererAggregate extends RendererIterable<Matrix<Color>> {
@@ -33,6 +33,7 @@ public class RendererAggregate extends RendererIterable<Matrix<Color>> {
 		waitingForAdvance = new boolean[source.nFrames()];
 		
 		source.onAnimationUpdate().add(actionSourceUpdated);
+		start();
 	}
 	
 	
@@ -40,7 +41,12 @@ public class RendererAggregate extends RendererIterable<Matrix<Color>> {
 		this(source, Integer.MAX_VALUE);
 	}
 	
-
+	
+	public AnimationColorSampling source() {
+		return source;
+	}
+	
+	
 	@Override
 	public void dispose() {
 		source.onAnimationUpdate().remove(actionSourceUpdated);
@@ -60,7 +66,7 @@ public class RendererAggregate extends RendererIterable<Matrix<Color>> {
 		
 		int n = iterations[iFrame]; // TODO thread safety
 		
-		Utils.parallelY(sizeFrame, y -> {
+		UtilsGL.parallelY(sizeFrame, y -> {
 			int sizeFrameX = sizeFrame.xInt();
 			for (int x = 0; x < sizeFrameX; x++) {
 				frame.set(x, y, frameAggregate.get(x, y).div(n));
@@ -75,8 +81,14 @@ public class RendererAggregate extends RendererIterable<Matrix<Color>> {
 		Matrix<Color> frameSource = source.frame(iFrame);
 		Matrix<Color> frameAggregate = aggregate.frame(iFrame);
 		Matrix<Color> frameAggregateNew = new Matrix<>(sizeFrame);
+		// TODO Why am I making frameAggregateNew and not writing directly to frameAggregate?
+		//  I remember introducing this variable for purpose...
+		//  (Better?) alternatives:
+		//  - Locking
+		//  - Buffering
+		//  - Nothing, write to the same matrix (is anything really needed?)
 		
-		Utils.parallelY(sizeFrame, y -> {             // TODO parallel(sizeFrame, (y, maxX) -> {...})
+		UtilsGL.parallelY(sizeFrame, y -> {
 			int sizeFrameX = sizeFrame.xInt();
 			for (int x = 0; x < sizeFrameX; x++) {
 				Color cPrev = frameAggregate.get(x, y);
@@ -115,6 +127,7 @@ public class RendererAggregate extends RendererIterable<Matrix<Color>> {
 	
 	@Override
 	public void iterate() {
+		// TODO this is a short-circuit in RendererIterable.
 		for (int iFrame = 0; iFrame < nFrames(); iFrame++) {
 			iterateFrame(iFrame);
 		}

@@ -6,6 +6,7 @@ import xyz.marsavic.functions.interfaces.Action1;
 /**
  * Thread safe
  */
+// TODO add transformation
 public class CacheEager<F> extends Animation<F> {
 	
 	private final Animation<F> source;

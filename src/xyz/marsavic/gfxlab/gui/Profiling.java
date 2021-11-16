@@ -2,13 +2,14 @@ package xyz.marsavic.gfxlab.gui;
 
 import xyz.marsavic.gfxlab.playground.GfxLab;
 import xyz.marsavic.time.Profiler;
-import xyz.marsavic.time.ProfilerPool;
+import xyz.marsavic.tuples.Tuple2;
 
 import javax.management.*;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.lang.management.OperatingSystemMXBean;
+import java.util.Comparator;
 
 
 public class Profiling {
@@ -61,7 +62,7 @@ public class Profiling {
 		sb.append(String.format("Heap max        : %8.2f %s\n", heapMemoryUsage.getMax      () / conversion, unit));
 		sb.append(String.format("Memory committed: %8.2f %s\n", heapMemoryUsage.getCommitted() / conversion, unit));
 		
-		sb.append(String.format("Parallelism     : %d/%d\n", GfxLab.parallelism, nCpus));
+		sb.append(String.format("Parallelism     : %d/%d\n", UtilsGL.parallelism, nCpus));
 		sb.append(String.format("CPU load average: %.2f\n", getProcessCpuLoad()));
 		
 		sb.append("\n");
@@ -73,10 +74,14 @@ public class Profiling {
 	public static String infoTextProfilers() {
 		StringBuilder sb = new StringBuilder();
 		
-		ProfilerPool.COMMON_POOL.profilers().forEach(profiler -> {
-			sb.append(profiler.toString());
-			sb.append("\n");
-		});
+		// Profilers change, can't sort them while running, so...
+		UtilsGL.profilers().stream()
+				.map(p -> new Tuple2<>(p, p.getTimePerSecond()))
+				.sorted(Comparator.comparingDouble(t -> -t.p1()))
+				.forEach(t -> {
+					sb.append(t.p0());
+					sb.append("\n");
+				});
 		
 		sb.append("\n");
 		

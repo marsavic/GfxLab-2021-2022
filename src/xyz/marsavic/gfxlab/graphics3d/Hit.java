@@ -1,6 +1,5 @@
 package xyz.marsavic.gfxlab.graphics3d;
 
-import xyz.marsavic.geometry.Vector;
 import xyz.marsavic.gfxlab.Vec3;
 
 
@@ -13,6 +12,10 @@ public interface Hit {
 	/** The normal at the point of the hit */
 	Vec3 n();
 	
+	
+	static double t(Hit hit) {
+		return hit == null ? Double.POSITIVE_INFINITY : hit.t();
+	}
 	
 	
 	// =====================================================================================================
@@ -35,17 +38,5 @@ public interface Hit {
 			return t;
 		}
 	}
-	
-	
-	Hit NEGATIVE_INFINITY = new Hit() {
-		@Override public double t () { return Double.NEGATIVE_INFINITY; }
-		@Override public Vec3   n () { return Vec3.ZERO; }
-	};
-	
-	
-	Hit POSITIVE_INFINITY = new Hit() {
-		@Override public double t () { return Double.POSITIVE_INFINITY; }
-		@Override public Vec3   n () { return Vec3.ZERO; }
-	};
 	
 }

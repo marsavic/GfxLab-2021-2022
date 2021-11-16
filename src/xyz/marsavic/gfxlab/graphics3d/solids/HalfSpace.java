@@ -15,7 +15,6 @@ public class HalfSpace implements Solid {
 	
 	// transient
 	private final Vec3 n; // A normal vector to the boundary plane
-	private final double e_f, f_e, eLSqr, fLSqr, sinSqr;
 	
 	
 	
@@ -24,14 +23,7 @@ public class HalfSpace implements Solid {
 		this.e = e;
 		this.f = f;
 		this.n = e.cross(f);
-
-		eLSqr = e.lengthSquared();
-		fLSqr = f.lengthSquared();
-		double ef = e.dot(f);
-		e_f = ef / fLSqr;
-		f_e = ef / eLSqr;
-		sinSqr = 1 - e_f * f_e;
-	}
+}
 	
 	
 	public static HalfSpace pef(Vec3 p, Vec3 e, Vec3 f) {
@@ -76,13 +68,13 @@ public class HalfSpace implements Solid {
 	public Hit firstHit(Ray ray, double afterTime) {
 		double o = n().dot(ray.d());
 		if (o == 0) {
-			return Hit.POSITIVE_INFINITY;
+			return null;
 		} else {
 			double t = n().dot(p().sub(ray.p())) / o;
 			if (t > afterTime) {
 				return new HitHalfSpace(ray, t);
 			} else {
-				return Hit.POSITIVE_INFINITY;
+				return null;
 			}
 		}
 	}
@@ -99,13 +91,6 @@ public class HalfSpace implements Solid {
 	}
 
 
-
-//	@Override
-//	public Solid complement() {
-//		return HalfSpace.pef(p(), f(), e());
-//	}
-	
-	
 	class HitHalfSpace extends Hit.HitRayT {
 		
 		protected HitHalfSpace(Ray ray, double t) {

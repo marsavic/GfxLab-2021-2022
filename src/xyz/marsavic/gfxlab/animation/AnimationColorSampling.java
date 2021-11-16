@@ -2,13 +2,9 @@ package xyz.marsavic.gfxlab.animation;
 
 import xyz.marsavic.functions.interfaces.Function1;
 import xyz.marsavic.geometry.Vector;
-import xyz.marsavic.gfxlab.Color;
-import xyz.marsavic.gfxlab.Matrix;
-import xyz.marsavic.gfxlab.Vec3;
-import xyz.marsavic.gfxlab.ColorSampler;
-import xyz.marsavic.gfxlab.Transformation;
+import xyz.marsavic.gfxlab.*;
+import xyz.marsavic.gfxlab.gui.UtilsGL;
 import xyz.marsavic.random.RNG;
-import xyz.marsavic.utils.Utils;
 
 
 public class AnimationColorSampling extends Animation<Matrix<Color>> {
@@ -83,13 +79,14 @@ public class AnimationColorSampling extends Animation<Matrix<Color>> {
 	
 	@Override
 	public Matrix<Color> frame(int iFrame) {
-		Matrix<Color> frame = new Matrix<>(sizeFrame);
 		RNG rng = rngs[iFrame];                           // TODO should start from the same seed if asked again without advance
 		
-		Utils.parallelY(sizeFrame, y -> {
+		Matrix<Color> frame = new Matrix<>(sizeFrame);
+		
+		UtilsGL.parallelY(sizeFrame, y -> {
 			int sizeFrameX = sizeFrame.xInt();
 			for (int x = 0; x < sizeFrameX; x++) {
-				Vec3 offset = Vec3.random(rng);
+				Vec3 offset = Vec3.random(rng);                 // TODO rng for each y!
 				//noinspection SuspiciousNameCombination
 				Vec3 pViewSpace = Vec3.xyz(iFrame, x, y).add(offset);
 				Vec3 p = transformation.applyTo(pViewSpace);
@@ -99,7 +96,7 @@ public class AnimationColorSampling extends Animation<Matrix<Color>> {
 				frame.set(x, y, c);
 			}
 		});
-		
+
 		return frame;
 	}
 	

@@ -2,6 +2,8 @@ package xyz.marsavic.gfxlab.animation;
 
 import xyz.marsavic.functions.interfaces.Action1;
 import xyz.marsavic.functions.interfaces.Function1;
+import xyz.marsavic.time.Profiler;
+import xyz.marsavic.time.ProfilerPool;
 
 
 public class TransformedAnimation<F, S> extends Animation<F> {

@@ -58,8 +58,10 @@ public class AnimationData<F> extends Animation<F> {
 	
 	
 	protected void setFrame(int iFrame, F frame) {
-		frames.set(iFrame, frame);
-		dispatcherAnimationUpdate.fire(new EventAnimationUpdate(iFrame));
+		F framePrevious = frames.set(iFrame, frame);
+		if (frame != framePrevious) {
+			dispatcherAnimationUpdate.fire(new EventAnimationUpdate(iFrame));
+		}
 	}
 
 

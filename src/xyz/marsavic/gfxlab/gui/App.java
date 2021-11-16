@@ -6,29 +6,30 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
-import xyz.marsavic.gfxlab.playground.GfxLab;
 import xyz.marsavic.gfxlab.gui.instruments.InstrumentAnimationRawImage;
+import xyz.marsavic.gfxlab.playground.Catalog;
+import xyz.marsavic.gfxlab.playground.GfxLab;
 import xyz.marsavic.gfxlab.resources.Resources;
 import xyz.marsavic.objectinstruments.Context;
 import xyz.marsavic.objectinstruments.Panel;
 import xyz.marsavic.objectinstruments.instruments.InstrumentObject;
 import xyz.marsavic.objectinstruments.instruments.InstrumentText;
 import xyz.marsavic.objectinstruments.instruments.PollingInstrument;
-import xyz.marsavic.reactions.collections.ReactiveSet;
-import xyz.marsavic.reactions.collections.ReactiveSetBacked;
-import xyz.marsavic.statistics.DistributionStatistics;
+
+import java.util.List;
 
 
 public class App extends Application {
 	
 	private final GfxLab gfxLab = new GfxLab();
 	
-	private final ReactiveSet<Object> specialObjects = ReactiveSetBacked.withLinkedHashSet();
+//	private final ReactiveSet<Object> specialObjects = ReactiveSetBacked.withLinkedHashSet();
 	
-	{
-		DistributionStatistics<String> ds = new DistributionStatistics<>(String::length);
-//		specialObjects.addAll(gfxLab.animations);
-	}
+	
+	private final List<Object> instrumentedAtStart = List.of(
+			Catalog.INSTANCE,
+			gfxLab
+	);
 	
 	
 	@Override
@@ -38,15 +39,15 @@ public class App extends Application {
 		Panel panelL = new Panel();
 //		Context contextL = Context.defaultForObjectSet(new ReactiveSetUnion<>(specialObjects, panelL.objectSet()));
 		Context contextL = Context.defaultForPanel(panelL);
-		for (var object : gfxLab.instrumentedAtStart) {
-			panelL.addInstrument(InstrumentObject.of(object, contextL));
+		for (var object : instrumentedAtStart) {
+			panelL.addInstrument(InstrumentObject.of(object, f -> gfxLab.onChange(), contextL));
 		}
 		
 		Panel panelR = new Panel();
 		
 		panelR.addInstruments(
-				new PollingInstrument<>(new InstrumentAnimationRawImage(), () -> gfxLab.toneMappedAnimation),
-				new InstrumentText(() -> Profiling.infoTextSystem() + Profiling.infoTextProfilers(), 170)
+				new PollingInstrument<>(new InstrumentAnimationRawImage(), gfxLab::toneMappedAnimation),
+				new InstrumentText(() -> Profiling.infoTextSystem() + Profiling.infoTextProfilers(), 150)
 		);
 		
 		
@@ -91,6 +92,6 @@ public class App extends Application {
 		primaryStage.show();
 		
 		
-		gfxLab.startService();
+		gfxLab.onChange();
 	}
 }
