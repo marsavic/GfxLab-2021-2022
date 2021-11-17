@@ -15,6 +15,7 @@ public class HalfSpace implements Solid {
 	
 	// transient
 	private final Vec3 n; // A normal vector to the boundary plane
+	private final Vec3 n_; // A normalized normal vector to the boundary plane
 	
 	
 	
@@ -23,6 +24,7 @@ public class HalfSpace implements Solid {
 		this.e = e;
 		this.f = f;
 		this.n = e.cross(f);
+		n_ = n.normalized_();
 }
 	
 	
@@ -91,7 +93,7 @@ public class HalfSpace implements Solid {
 	}
 
 
-	class HitHalfSpace extends Hit.HitRayT {
+	class HitHalfSpace extends Hit.RayT {
 		
 		protected HitHalfSpace(Ray ray, double t) {
 			super(ray, t);
@@ -102,6 +104,10 @@ public class HalfSpace implements Solid {
 			return n;
 		}
 		
+		@Override
+		public Vec3 n_() {
+			return n_;
+		}
 	}
 	
 }

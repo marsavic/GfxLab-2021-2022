@@ -55,7 +55,7 @@ public class Ball implements Solid {
 	}
 	
 	
-	class HitBall extends Hit.HitRayT {
+	class HitBall extends Hit.RayT {
 		
 		protected HitBall(Ray ray, double t) {
 			super(ray, t);
@@ -64,6 +64,12 @@ public class Ball implements Solid {
 		@Override
 		public Vec3 n() {
 			return ray().at(t()).sub(c());
+		}
+		
+		
+		@Override
+		public Vec3 n_() {
+			return n().div(r);
 		}
 	}
 	

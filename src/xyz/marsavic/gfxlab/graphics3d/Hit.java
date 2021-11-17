@@ -12,19 +12,19 @@ public interface Hit {
 	/** The normal at the point of the hit */
 	Vec3 n();
 	
-	
-	static double t(Hit hit) {
-		return hit == null ? Double.POSITIVE_INFINITY : hit.t();
+	/** The normalized normal at the point of the hit */
+	default Vec3 n_() {
+		return n().normalized_();
 	}
 	
 	
 	// =====================================================================================================
 	
-	abstract class HitRayT implements Hit {
+	abstract class RayT implements Hit {
 		private final Ray ray;
 		private final double t;
 		
-		protected HitRayT(Ray ray, double t) {
+		protected RayT(Ray ray, double t) {
 			this.ray = ray;
 			this.t = t;
 		}
@@ -36,6 +36,17 @@ public interface Hit {
 		@Override
 		public double t() {
 			return t;
+		}
+	}
+	
+	
+	record Data(double t, Vec3 n) implements Hit {
+		public static Data tn(double t, Vec3 n) {
+			return new Data(t, n);
+		}
+		
+		public static Data from(Hit hit) {
+			return Data.tn(hit.t(), hit.n());
 		}
 	}
 	

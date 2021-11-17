@@ -1,34 +1,56 @@
 package xyz.marsavic.gfxlab.graphics3d.raytracers;
 
+import xyz.marsavic.functions.interfaces.Function1;
 import xyz.marsavic.gfxlab.Color;
+import xyz.marsavic.gfxlab.Material;
 import xyz.marsavic.gfxlab.Vec3;
-import xyz.marsavic.gfxlab.graphics3d.Hit;
-import xyz.marsavic.gfxlab.graphics3d.Ray;
-import xyz.marsavic.gfxlab.graphics3d.RayTracer;
-import xyz.marsavic.gfxlab.graphics3d.solids.Ball;
-import xyz.marsavic.gfxlab.graphics3d.solids.HalfSpace;
+import xyz.marsavic.gfxlab.graphics3d.*;
 
+import java.util.Collection;
 
+/**
+ * A raytracer that renders only the diffuse color of the bodies using diffuse (Lambertian) shading.
+ */
 public class RayTracerTest extends RayTracer {
-
-	Ball ball;
-	HalfSpace halfSpace;
 	
-	
-	public RayTracerTest(double y, double z) {
-		 ball = Ball.cr(Vec3.xyz(0, 0, z), 1);
-		 halfSpace = HalfSpace.pn(Vec3.xyz(0, y, 0), Vec3.xyz(0, 1, 0));
+	public RayTracerTest(Scene scene, Function1<Collider, Collection<Body>> colliderFactory) {
+		super(scene, colliderFactory);
 	}
 	
 	
 	@Override
 	protected Color sample(Ray ray) {
-		Hit hit1 = ball.firstHit(ray, 0.0);
-		Hit hit2 = halfSpace.firstHit(ray, 0.0);
+		Collider.Collision collision = collider().collide(ray);
 		
-		double t = Math.min(Hit.t(hit1), Hit.t(hit2));
+		if (collision == null) {
+			return scene().backgroundColor();
+		}
 		
-		return t == Double.POSITIVE_INFINITY ? Color.BLACK : Color.gray(1 / (1 + t));
+		Body body = collision.body();
+		Hit hit = collision.hit();
+		Material material = body.materialAt(hit);
+		
+		Vec3 p = ray.at(hit.t());               // Point of the collision
+		Vec3 n_ = hit.n_();                     // Normalized normal to the body surface at the point of the collision
+		
+		Color lightDiffuse = Color.BLACK;       // The sum of diffuse contributions from all the lights
+		
+		for (Light light : scene().lights()) {
+			Vec3 l = light.p().sub(p);          // Vector from p to the light;
+			double lLSqr = l.lengthSquared();   // Distance from p to the light squared
+			double lL = Math.sqrt(lLSqr);       // Distance from p to the light
+			double cosLN = n_.dot(l) / lL;      // Cosine of the angle between l and n_
+			
+			if (cosLN > 0) {
+				Color irradiance = light.c().mul(cosLN / lLSqr);
+				// The irradiance represents how much light is received by a unit area of the surface. It is
+				// proportional to the cosine of the incoming angle and inversely proportional to the distance squared
+				// (inverse-square law).
+				lightDiffuse = lightDiffuse.add(irradiance);
+			}
+		}
+		
+		return material.diffuse().mul(lightDiffuse);
 	}
 	
 }

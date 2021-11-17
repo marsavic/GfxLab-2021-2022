@@ -35,5 +35,4 @@ public class ToneMappingFunctionSimple implements ToneMappingFunction {
 		});
 	}
 	
-	
 }

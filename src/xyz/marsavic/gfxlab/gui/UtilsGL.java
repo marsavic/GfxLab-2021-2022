@@ -128,7 +128,7 @@ public class UtilsGL {
 		int p;
 		try {
 			boolean obsRunning = ProcessHandle.allProcesses().anyMatch(ph -> ph.info().command().orElse("").contains("obs64"));
-			p = obsRunning ? 4 : ForkJoinPool.getCommonPoolParallelism();
+			p = obsRunning ? 2 : ForkJoinPool.getCommonPoolParallelism();
 		} catch (Exception e) {
 			e.printStackTrace();
 			p = ForkJoinPool.getCommonPoolParallelism();
