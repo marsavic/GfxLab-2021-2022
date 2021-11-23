@@ -32,11 +32,10 @@ public class GfxLab {
 	public int seed = 0;
 	
 	@GadgetDouble(p = -0.05, q = 0.05)
-	public double y = 0;
+	public double phi = 0;
 	
 	@GadgetDouble(p = 0, q = 0.5)
 	public double fovAngle = 0.14;
-	
 	
 	
 	
@@ -47,7 +46,7 @@ public class GfxLab {
 				Perspective.fov(fovAngle),
 				Affine.IDENTITY
 						.andThen(Affine.translation(Vec3.xyz(0, 0, -3)))
-						.andThen(Affine.rotationAboutY(y))
+						.andThen(Affine.rotationAboutY(phi))
 		);
 		
 		rayTracer = new RayTracerTest(scene, Collider.BruteForce::new, camera);
