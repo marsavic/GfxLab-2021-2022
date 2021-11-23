@@ -2,7 +2,7 @@ package xyz.marsavic.gfxlab.graphics3d.raytracers;
 
 import xyz.marsavic.functions.interfaces.Function1;
 import xyz.marsavic.gfxlab.Color;
-import xyz.marsavic.gfxlab.Material;
+import xyz.marsavic.gfxlab.graphics3d.Material;
 import xyz.marsavic.gfxlab.Vec3;
 import xyz.marsavic.gfxlab.graphics3d.*;
 
@@ -13,8 +13,8 @@ import java.util.Collection;
  */
 public class RayTracerTest extends RayTracer {
 	
-	public RayTracerTest(Scene scene, Function1<Collider, Collection<Body>> colliderFactory) {
-		super(scene, colliderFactory);
+	public RayTracerTest(Scene scene, Function1<Collider, Collection<Body>> colliderFactory, Camera camera) {
+		super(scene, colliderFactory, camera);
 	}
 	
 	
@@ -37,16 +37,23 @@ public class RayTracerTest extends RayTracer {
 		
 		for (Light light : scene().lights()) {
 			Vec3 l = light.p().sub(p);          // Vector from p to the light;
-			double lLSqr = l.lengthSquared();   // Distance from p to the light squared
-			double lL = Math.sqrt(lLSqr);       // Distance from p to the light
-			double cosLN = n_.dot(l) / lL;      // Cosine of the angle between l and n_
 			
-			if (cosLN > 0) {
-				Color irradiance = light.c().mul(cosLN / lLSqr);
-				// The irradiance represents how much light is received by a unit area of the surface. It is
-				// proportional to the cosine of the incoming angle and inversely proportional to the distance squared
-				// (inverse-square law).
-				lightDiffuse = lightDiffuse.add(irradiance);
+			Ray rayToLight = Ray.pd(p, l);
+			
+			Collider.Collision collisionLight = collider().collide(rayToLight);
+			
+			if ((collisionLight == null) || (collisionLight.hit().t() > 1)) {
+				double lLSqr = l.lengthSquared();   // Distance from p to the light squared
+				double lL = Math.sqrt(lLSqr);       // Distance from p to the light
+				double cosLN = n_.dot(l) / lL;      // Cosine of the angle between l and n_
+				
+				if (cosLN > 0) {
+					Color irradiance = light.c().mul(cosLN / lLSqr);
+					// The irradiance represents how much light is received by a unit area of the surface. It is
+					// proportional to the cosine of the incoming angle and inversely proportional to the distance squared
+					// (inverse-square law).
+					lightDiffuse = lightDiffuse.add(irradiance);
+				}
 			}
 		}
 		

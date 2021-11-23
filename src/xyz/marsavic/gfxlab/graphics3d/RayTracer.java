@@ -4,7 +4,6 @@ import xyz.marsavic.functions.interfaces.Function1;
 import xyz.marsavic.geometry.Vector;
 import xyz.marsavic.gfxlab.Color;
 import xyz.marsavic.gfxlab.ColorSamplerT;
-import xyz.marsavic.gfxlab.Vec3;
 
 import java.util.Collection;
 
@@ -13,12 +12,14 @@ public abstract class RayTracer implements ColorSamplerT {
 	
 	private final Scene scene;
 	private final Collider collider;
+	private final Camera camera;
 
 	
 	
-	public RayTracer(Scene scene, Function1<Collider, Collection<Body>> colliderFactory) {
+	public RayTracer(Scene scene, Function1<Collider, Collection<Body>> colliderFactory, Camera camera) {
 		this.scene = scene;
 		this.collider = colliderFactory.at(scene.bodies());
+		this.camera = camera;
 	}
 	
 	public Scene scene() {
@@ -35,7 +36,7 @@ public abstract class RayTracer implements ColorSamplerT {
 	
 	@Override
 	public Color sample(double t, Vector p) {
-		return sample(Ray.pd(Vec3.ZERO, Vec3.pz(p, 1)));
+		return sample(camera.sampleExitingRay(p));
 	}
 	
 }

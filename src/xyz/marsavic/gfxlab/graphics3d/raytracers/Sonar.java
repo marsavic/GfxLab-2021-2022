@@ -11,8 +11,8 @@ import java.util.Collection;
  */
 public class Sonar extends RayTracer {
 	
-	public Sonar(Scene scene, Function1<Collider, Collection<Body>> colliderFactory) {
-		super(scene, colliderFactory);
+	public Sonar(Scene scene, Function1<Collider, Collection<Body>> colliderFactory, Camera camera) {
+		super(scene, colliderFactory, camera);
 	}
 	
 	

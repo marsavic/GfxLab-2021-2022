@@ -24,6 +24,8 @@ public interface Collider {
 	
 	public static class BruteForce implements Collider {
 		
+		private static final double EPSILON = 1e-12;
+		
 		private final Body[] bodies; // Using an array for efficiency.
 		
 		
@@ -39,7 +41,7 @@ public interface Collider {
 			Body minBody = null;
 			
 			for (Body body : bodies) {
-				Hit hit = body.solid().firstHit(r, 0);
+				Hit hit = body.solid().firstHit(r, EPSILON);
 				if ((hit != null) && (hit.t() < minHitT)) {
 					minHitT = hit.t();
 					minHit = hit;

@@ -1,4 +1,6 @@
-package xyz.marsavic.gfxlab;
+package xyz.marsavic.gfxlab.graphics3d;
+
+import xyz.marsavic.gfxlab.Color;
 
 public record Material (
 		Color diffuse

@@ -14,4 +14,9 @@ public record Light (
 		return new Light(p, c);
 	}
 	
+	
+	public static Light p(Vec3 p) {
+		return pc(p, Color.WHITE);
+	}
+	
 }

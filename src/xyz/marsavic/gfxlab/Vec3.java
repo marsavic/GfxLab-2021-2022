@@ -391,6 +391,17 @@ public class Vec3 {
 		return Vector.xy(y(), z());
 	}
 	
+	/** The result is obtained by applying the affine transform that maps 0 to -1 and 1 to 1. */
+	public Vec3 ZOtoMP() {
+		return mul(2).sub(Vec3.EXYZ);
+	}
+	
+	/** The result is obtained by applying the affine transform that maps -1 to 0 and 1 to 1. */
+	public Vec3 MPtoZO() {
+		return add(Vec3.EXYZ).mul(0.5);
+	}
+	
+	
 	
 	@Override
 	public String toString() {

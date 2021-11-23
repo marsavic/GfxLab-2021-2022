@@ -1,7 +1,5 @@
 package xyz.marsavic.gfxlab.graphics3d;
 
-import xyz.marsavic.gfxlab.Material;
-
 
 public interface Body {
 	
