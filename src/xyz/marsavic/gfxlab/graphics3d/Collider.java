@@ -14,6 +14,11 @@ public interface Collider {
 	Collision collide(Ray r);
 	
 	
+	default boolean collidesIn01(Ray r) {
+		Collision collision = collide(r);
+		return (collision != null) && (collision.hit().t() < 1);
+	}
+	
 	
 	public static record Collision (
 			Hit hit, Body body
@@ -24,7 +29,7 @@ public interface Collider {
 	
 	public static class BruteForce implements Collider {
 		
-		private static final double EPSILON = 1e-12;
+		private static final double EPSILON = 1e-9;
 		
 		private final Body[] bodies; // Using an array for efficiency.
 		
@@ -51,6 +56,19 @@ public interface Collider {
 			
 			return minBody == null ? null : new Collision(minHit, minBody);
 		}
+		
+		
+		@Override
+		public boolean collidesIn01(Ray r) {
+			for (Body body : bodies) {
+				Hit hit = body.solid().firstHit(r, EPSILON);
+				if ((hit != null) && (hit.t() < 1)) {
+					return true;
+				}
+			}
+			return false;
+		}
+		
 	}
 	
 }

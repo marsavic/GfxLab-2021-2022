@@ -37,7 +37,7 @@ public interface Body {
 	 * Returns a body having the default material at each surface point.
 	 */
 	public static Body uniform(Solid solid) {
-		return uniform(solid, Material.DIFFUSE);
+		return uniform(solid, Material.MATTE);
 	}
 	
 }
