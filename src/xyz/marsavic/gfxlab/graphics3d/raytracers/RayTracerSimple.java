@@ -11,7 +11,7 @@ import java.util.Collection;
 /**
  * A raytracer that renders only the diffuse color of the bodies using diffuse (Lambertian) shading.
  */
-public class RayTracerTest extends RayTracer {
+public class RayTracerSimple extends RayTracer {
 	
 	final boolean showDiffuse;
 	final boolean showSpecular;
@@ -21,7 +21,7 @@ public class RayTracerTest extends RayTracer {
 	
 	
 	
-	public RayTracerTest(Scene scene, Function1<Collider, Collection<Body>> colliderFactory, Camera camera, boolean showDiffuse, boolean showSpecular, boolean shadows, int maxDepth) {
+	public RayTracerSimple(Scene scene, Function1<Collider, Collection<Body>> colliderFactory, Camera camera, boolean showDiffuse, boolean showSpecular, boolean shadows, int maxDepth) {
 		super(scene, colliderFactory, camera);
 		this.showDiffuse = showDiffuse;
 		this.showSpecular = showSpecular;
@@ -30,7 +30,7 @@ public class RayTracerTest extends RayTracer {
 	}
 	
 	
-	public RayTracerTest(Scene scene, Function1<Collider, Collection<Body>> colliderFactory, Camera camera) {
+	public RayTracerSimple(Scene scene, Function1<Collider, Collection<Body>> colliderFactory, Camera camera) {
 		this(scene, colliderFactory, camera, true, true, true, 16);
 	}
 	
@@ -60,7 +60,7 @@ public class RayTracerTest extends RayTracer {
 		Vec3 n_ = hit.n_();                         // Normalized normal to the body surface at the point of the collision
 		Vec3 i = ray.d().inverse();                 // Incoming direction
 		Vec3 r = GeometryUtils.reflectedN(n_, i);   // Reflected ray (i reflected over n)
-		double lR = r.length();
+		double lI = i.length();
 		
 		Color lightDiffuse  = Color.BLACK;          // The sum of diffuse  contributions from all the lights
 		Color lightSpecular = Color.BLACK;          // The sum of specular contributions from all the lights
@@ -83,7 +83,7 @@ public class RayTracerTest extends RayTracer {
 					if (showSpecular) {
 						double lr = l.dot(r);
 						if (lr > 0) {                            // If the angle between l and r is acute
-							double cosLR = lr / (lL * lR);       // cos angle between reflected ray and light
+							double cosLR = lr / (lL * lI);       // cos angle between reflected ray and light (lR = lI)
 							lightSpecular = lightSpecular.add(irradiance.mul(Math.pow(cosLR, material.shininess())));
 						}
 					}
@@ -96,9 +96,39 @@ public class RayTracerTest extends RayTracer {
 		if (showSpecular) result = result.add(material.specular().mul(lightSpecular));
 		
 		
+		// Reflection
+		
 		if (material.reflective().notZero()) {
 			// When material has reflective properties we recursively find the color visible along the ray (p, r).
 			result = result.add(sample(Ray.pd(p, r), depthRemaining - 1).mul(material.reflective()));
+		}
+		
+		
+		// Refraction
+		
+		if (material.refractive().notZero()) {
+			double ri = material.refractiveIndex();
+			double c1 = i.dot(n_) / lI;
+			
+			double k = 1;
+			if (c1 < 0) {
+				ri = 1 / ri;
+				k = -1;
+			}
+			
+			double s1Sqr = 1 - c1 * c1;
+			double s2Sqr = s1Sqr / (ri * ri);
+			double c2Sqr = 1 - s2Sqr;
+			
+			Vec3 f;
+			if (c2Sqr > 0) {
+				double c2 = k * Math.sqrt(c2Sqr);
+				f = n_.mul(c1 / ri - c2).sub(i.div(ri * lI));
+			} else {
+				f = r;
+			}
+			
+			result = result.add(sample(Ray.pd(p, f), depthRemaining - 1).mul(material.refractive()));
 		}
 		
 		

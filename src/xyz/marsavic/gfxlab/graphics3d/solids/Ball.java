@@ -1,9 +1,11 @@
 package xyz.marsavic.gfxlab.graphics3d.solids;
 
+import xyz.marsavic.geometry.Vector;
 import xyz.marsavic.gfxlab.Vec3;
 import xyz.marsavic.gfxlab.graphics3d.Hit;
 import xyz.marsavic.gfxlab.graphics3d.Ray;
 import xyz.marsavic.gfxlab.graphics3d.Solid;
+import xyz.marsavic.utils.Numeric;
 
 
 public class Ball implements Solid {
@@ -71,6 +73,16 @@ public class Ball implements Solid {
 		public Vec3 n_() {
 			return n().div(r);
 		}
+		
+		@Override
+		public Vector uv() {
+			Vec3 n_ = n_();
+			return Vector.xy(
+					Numeric.atan2T(n_.z(), n_.x()),
+					2 * Numeric.asinT(n_.y()) + 0.5
+			);
+		}
+		
 	}
 	
 }

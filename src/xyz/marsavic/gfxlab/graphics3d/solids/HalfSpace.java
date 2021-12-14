@@ -1,7 +1,8 @@
 package xyz.marsavic.gfxlab.graphics3d.solids;
 
-import xyz.marsavic.gfxlab.graphics3d.GeometryUtils;
+import xyz.marsavic.geometry.Vector;
 import xyz.marsavic.gfxlab.Vec3;
+import xyz.marsavic.gfxlab.graphics3d.GeometryUtils;
 import xyz.marsavic.gfxlab.graphics3d.Hit;
 import xyz.marsavic.gfxlab.graphics3d.Ray;
 import xyz.marsavic.gfxlab.graphics3d.Solid;
@@ -16,6 +17,7 @@ public class HalfSpace implements Solid {
 	// transient
 	private final Vec3 n; // A normal vector to the boundary plane
 	private final Vec3 n_; // A normalized normal vector to the boundary plane
+	private final double e_f, f_e, eLSqr, fLSqr, sinSqr;
 	
 	
 	
@@ -24,8 +26,16 @@ public class HalfSpace implements Solid {
 		this.e = e;
 		this.f = f;
 		this.n = e.cross(f);
+		
 		n_ = n.normalized_();
-}
+		
+		eLSqr = e.lengthSquared();
+		fLSqr = f.lengthSquared();
+		double ef = e.dot(f);
+		e_f = ef / fLSqr;
+		f_e = ef / eLSqr;
+		sinSqr = 1 - e_f * f_e;
+	}
 	
 	
 	public static HalfSpace pef(Vec3 p, Vec3 e, Vec3 f) {
@@ -66,9 +76,15 @@ public class HalfSpace implements Solid {
 	}
 	
 	
+	public Vec3 n_() {
+		return n_;
+	}
+	
+	
 	@Override
-	public Hit firstHit(Ray ray, double afterTime) {
+	public HitHalfSpace firstHit(Ray ray, double afterTime) {
 		double o = n().dot(ray.d());
+		
 		if (o == 0) {
 			return null;
 		} else {
@@ -93,6 +109,7 @@ public class HalfSpace implements Solid {
 	}
 
 
+	
 	class HitHalfSpace extends Hit.RayT {
 		
 		protected HitHalfSpace(Ray ray, double t) {
@@ -107,6 +124,19 @@ public class HalfSpace implements Solid {
 		@Override
 		public Vec3 n_() {
 			return n_;
+		}
+		
+		@Override
+		public Vector uv() {
+			Vec3 b = ray().at(t()).sub(p);
+			
+			double b_e = b.dot(e) / eLSqr;
+			double b_f = b.dot(f) / fLSqr;
+			
+			return Vector.xy(
+					(b_e - b_f * f_e) / sinSqr,
+					(b_f - b_e * e_f) / sinSqr
+			);
 		}
 	}
 	

@@ -5,8 +5,8 @@ import xyz.marsavic.gfxlab.animation.*;
 import xyz.marsavic.gfxlab.graphics3d.*;
 import xyz.marsavic.gfxlab.graphics3d.cameras.Perspective;
 import xyz.marsavic.gfxlab.graphics3d.cameras.TransformedCamera;
-import xyz.marsavic.gfxlab.graphics3d.raytracers.RayTracerTest;
-import xyz.marsavic.gfxlab.graphics3d.scenes.Mirrors;
+import xyz.marsavic.gfxlab.graphics3d.raytracers.RayTracerSimple;
+import xyz.marsavic.gfxlab.graphics3d.scenes.Oranges;
 import xyz.marsavic.gfxlab.tonemapping.ColorTransformForColorMatrix;
 import xyz.marsavic.gfxlab.tonemapping.ToneMappingFunctionSimple;
 import xyz.marsavic.objectinstruments.annotations.GadgetDouble;
@@ -26,7 +26,7 @@ public class GfxLab {
 	@GadgetDouble(p = 0, q = 5)
 	public double brightnessFactor = 1.0;
 	
-	public int nBalls = 7;
+	public int nBalls = 1;
 	
 //	public int nLights = 8;
 	
@@ -57,13 +57,16 @@ public class GfxLab {
 	
 	public int maxDepth = 16;
 	
+	@GadgetDoubleExponential(p = 0.1, q = 10)
+	public double refractionIndex = 1;
 	
 	
 	synchronized void setup() {
 		scene =
 //				new DiscoRoom(nBalls, nLights, shininess, seed);
-				new Mirrors(nBalls, omicron);
+//				new Mirrors(nBalls, omicron);
 //				new MirrorRoom(reflectivity);
+				new Oranges(nBalls);
 		
 		camera = new TransformedCamera(
 				Perspective.fov(fovAngle),
@@ -72,7 +75,7 @@ public class GfxLab {
 						.andThen(Affine.rotationAboutY(phi))
 		);
 		
-		rayTracer = new RayTracerTest(
+		rayTracer = new RayTracerSimple(
 				scene,
 				Collider.BruteForce::new,
 				camera,

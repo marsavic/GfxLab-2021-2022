@@ -1,6 +1,8 @@
 package xyz.marsavic.gfxlab.graphics3d;
 
+import xyz.marsavic.geometry.Vector;
 import xyz.marsavic.gfxlab.Vec3;
+
 
 
 /** Interaction of a ray with a solid.*/
@@ -17,6 +19,9 @@ public interface Hit {
 		return n().normalized_();
 	}
 	
+	default Vector uv() {
+		return Vector.ZERO;
+	}
 	
 	// =====================================================================================================
 	

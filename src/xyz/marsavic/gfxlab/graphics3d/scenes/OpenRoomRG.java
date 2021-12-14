@@ -15,8 +15,8 @@ public class OpenRoomRG extends Scene.Base {
 	
 	public OpenRoomRG() {
 		Collections.addAll(bodies,
-				Body.uniform(HalfSpace.pn(Vec3.xyz( 1,  0,  0), Vec3.xyz(-1,  0,  0)), Material.MATTE.diffuse(Color.hsb(0, 0.5, 1))),
-				Body.uniform(HalfSpace.pn(Vec3.xyz(-1,  0,  0), Vec3.xyz( 1,  0,  0)), Material.MATTE.diffuse(Color.rgb(1.0/3, 0.5, 0))),
+				Body.uniform(HalfSpace.pn(Vec3.xyz( 1,  0,  0), Vec3.xyz(-1,  0,  0)), Material.MATTE.diffuse(Color.hsb(0    , 0.5, 0.7))),
+				Body.uniform(HalfSpace.pn(Vec3.xyz(-1,  0,  0), Vec3.xyz( 1,  0,  0)), Material.MATTE.diffuse(Color.hsb(1.0/3, 0.5, 0.7))),
 				Body.uniform(HalfSpace.pn(Vec3.xyz( 0,  1,  0), Vec3.xyz( 0, -1,  0))),
 				Body.uniform(HalfSpace.pn(Vec3.xyz( 0, -1,  0), Vec3.xyz( 0,  1,  0))),
 				Body.uniform(HalfSpace.pn(Vec3.xyz( 0,  0,  1), Vec3.xyz( 0,  0, -1)))

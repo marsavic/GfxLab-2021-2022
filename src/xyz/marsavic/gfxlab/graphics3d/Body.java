@@ -1,6 +1,8 @@
 package xyz.marsavic.gfxlab.graphics3d;
 
 
+import xyz.marsavic.geometry.Vector;
+
 public interface Body {
 	
 	/**
@@ -39,5 +41,19 @@ public interface Body {
 	public static Body uniform(Solid solid) {
 		return uniform(solid, Material.MATTE);
 	}
+
 	
+	public static Body textured(Solid solid, Texture texture) {
+		return new Body() {
+			@Override
+			public Solid solid() {
+				return solid;
+			}
+			
+			@Override
+			public Material materialAt(Hit p) {
+				return texture.materialAt(p.uv());
+			}
+		};
+	}
 }
