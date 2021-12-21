@@ -7,6 +7,8 @@ import xyz.marsavic.gfxlab.graphics3d.cameras.Perspective;
 import xyz.marsavic.gfxlab.graphics3d.cameras.TransformedCamera;
 import xyz.marsavic.gfxlab.graphics3d.raytracers.RayTracerSimple;
 import xyz.marsavic.gfxlab.graphics3d.scenes.Oranges;
+import xyz.marsavic.gfxlab.graphics3d.scenes.TestCSG;
+import xyz.marsavic.gfxlab.graphics3d.scenes.TestTransformed;
 import xyz.marsavic.gfxlab.tonemapping.ColorTransformForColorMatrix;
 import xyz.marsavic.gfxlab.tonemapping.ToneMappingFunctionSimple;
 import xyz.marsavic.objectinstruments.annotations.GadgetDouble;
@@ -60,14 +62,19 @@ public class GfxLab {
 	@GadgetDoubleExponential(p = 0.1, q = 10)
 	public double refractionIndex = 1;
 	
+//	public double phiX, phiY, phiZ;
+	
+	public double t;
 	
 	synchronized void setup() {
 		scene =
 //				new DiscoRoom(nBalls, nLights, shininess, seed);
 //				new Mirrors(nBalls, omicron);
 //				new MirrorRoom(reflectivity);
-				new Oranges(nBalls);
-		
+//				new Oranges(nBalls);
+//				new TestTransformed(phiX, phiY, phiZ);
+				new TestCSG(t);
+				
 		camera = new TransformedCamera(
 				Perspective.fov(fovAngle),
 				Affine.IDENTITY

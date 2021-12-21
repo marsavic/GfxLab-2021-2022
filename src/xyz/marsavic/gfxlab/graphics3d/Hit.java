@@ -23,6 +23,25 @@ public interface Hit {
 		return Vector.ZERO;
 	}
 	
+	
+	default Hit withN(Vec3 n) {
+		return new Hit() {
+			@Override public double t() { return Hit.this.t(); }
+			@Override public Vec3 n() { return n; }
+			@Override public Vector uv() { return Hit.this.uv(); }
+		};
+	}
+	
+	
+	default Hit inverse() {
+		return new Hit() {
+			@Override public double t() { return Hit.this.t(); }
+			@Override public Vec3 n() { return Hit.this.n().inverse(); }
+			@Override public Vec3 n_() { return Hit.this.n_().inverse(); }
+			@Override public Vector uv() { return Hit.this.uv(); }
+		};
+	}
+	
 	// =====================================================================================================
 	
 	abstract class RayT implements Hit {

@@ -1,5 +1,6 @@
 package xyz.marsavic.gfxlab.graphics3d;
 
+import xyz.marsavic.geometry.Vector;
 import xyz.marsavic.gfxlab.Color;
 
 public record Material (
@@ -9,7 +10,7 @@ public record Material (
 		Color reflective,
 		Color refractive,
 		double refractiveIndex
-) {
+) implements Texture {
 	
 	public Material diffuse        (Color  diffuse        ) { return new Material(diffuse, specular, shininess, reflective, refractive, refractiveIndex); }
 	public Material specular       (Color  specular       ) { return new Material(diffuse, specular, shininess, reflective, refractive, refractiveIndex); }
@@ -37,5 +38,11 @@ public record Material (
 	public static Material glass (double k) { return glass(Color.gray(k)); }
 	public static Material glass (        ) { return glass(Color.WHITE); }
 	public static final Material GLASS = glass();
+	
+	
+	@Override
+	public Material materialAt(Vector uv) {
+		return this;
+	}
 	
 }
