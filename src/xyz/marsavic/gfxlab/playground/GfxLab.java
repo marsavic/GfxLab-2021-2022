@@ -5,10 +5,8 @@ import xyz.marsavic.gfxlab.animation.*;
 import xyz.marsavic.gfxlab.graphics3d.*;
 import xyz.marsavic.gfxlab.graphics3d.cameras.Perspective;
 import xyz.marsavic.gfxlab.graphics3d.cameras.TransformedCamera;
-import xyz.marsavic.gfxlab.graphics3d.raytracers.RayTracerSimple;
-import xyz.marsavic.gfxlab.graphics3d.scenes.Oranges;
-import xyz.marsavic.gfxlab.graphics3d.scenes.TestCSG;
-import xyz.marsavic.gfxlab.graphics3d.scenes.TestTransformed;
+import xyz.marsavic.gfxlab.graphics3d.raytracers.PathTracer;
+import xyz.marsavic.gfxlab.graphics3d.scenes.TestGI;
 import xyz.marsavic.gfxlab.tonemapping.ColorTransformForColorMatrix;
 import xyz.marsavic.gfxlab.tonemapping.ToneMappingFunctionSimple;
 import xyz.marsavic.objectinstruments.annotations.GadgetDouble;
@@ -25,15 +23,6 @@ public class GfxLab {
 	Animation<RawImage> toneMappedAnimation;
 	
 	
-	@GadgetDouble(p = 0, q = 5)
-	public double brightnessFactor = 1.0;
-	
-	public int nBalls = 1;
-	
-//	public int nLights = 8;
-	
-//	public int seed = 0;
-	
 	@GadgetDoubleExponential(p = 0x1p-16, q = 0x1p+16)
 	public double preFactor = 0x1p-6;
 	
@@ -47,24 +36,15 @@ public class GfxLab {
 	public double fovAngle = 0.14;
 	
 	
-//	@GadgetDoubleExponential(p = 1, q = 256)
-//	public double shininess = 32;
-	
-	public boolean showDiffuse  = true;
-	public boolean showSpecular = true;
-	public boolean shadows = true;
-	
-	public double omicron = 0.0;
-//	public double reflectivity = 0.5;
-	
 	public int maxDepth = 16;
 	
 	@GadgetDoubleExponential(p = 0.1, q = 10)
-	public double refractionIndex = 1;
-	
-//	public double phiX, phiY, phiZ;
+	public double refractionIndex = 1.4;
 	
 	public double t;
+	
+	@GadgetDouble(p = -1, q = 1)
+	public double y = 0;
 	
 	synchronized void setup() {
 		scene =
@@ -73,7 +53,8 @@ public class GfxLab {
 //				new MirrorRoom(reflectivity);
 //				new Oranges(nBalls);
 //				new TestTransformed(phiX, phiY, phiZ);
-				new TestCSG(t);
+//				new TestCSG(t);
+				new TestGI();
 				
 		camera = new TransformedCamera(
 				Perspective.fov(fovAngle),
@@ -82,13 +63,20 @@ public class GfxLab {
 						.andThen(Affine.rotationAboutY(phi))
 		);
 		
-		rayTracer = new RayTracerSimple(
+//		rayTracer = new RayTracerSimple(
+//				scene,
+//				Collider.BruteForce::new,
+//				camera,
+//				showDiffuse,
+//				showSpecular,
+//				shadows,
+//				maxDepth
+//		);
+		
+		rayTracer = new PathTracer(
 				scene,
 				Collider.BruteForce::new,
 				camera,
-				showDiffuse,
-				showSpecular,
-				shadows,
 				maxDepth
 		);
 		

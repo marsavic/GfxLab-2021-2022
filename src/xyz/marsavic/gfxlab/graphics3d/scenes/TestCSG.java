@@ -1,6 +1,5 @@
 package xyz.marsavic.gfxlab.graphics3d.scenes;
 
-import xyz.marsavic.gfxlab.Color;
 import xyz.marsavic.gfxlab.Vec3;
 import xyz.marsavic.gfxlab.graphics3d.*;
 import xyz.marsavic.gfxlab.graphics3d.solids.Ball;
