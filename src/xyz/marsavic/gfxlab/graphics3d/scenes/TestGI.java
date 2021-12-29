@@ -15,7 +15,7 @@ public class TestGI extends Scene.Base {
 	public TestGI() {
 		addAllFrom(new OpenRoomRGTextured_GI());
 		
-		Material glass = new Material(BSDF.mix(BSDF.refractive(3.0), BSDF.REFLECTIVE, 0.05));
+		Material glass = new Material(BSDF.mix(BSDF.refractive(1.4), BSDF.REFLECTIVE, 0.05));
 		
 		Collections.addAll(bodies,
 				Body.uniform(Ball.cr(Vec3.xyz(-0.2, -0.5,  0.0), 0.3), glass),

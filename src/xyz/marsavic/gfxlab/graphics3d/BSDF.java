@@ -10,7 +10,7 @@ public interface BSDF {
 	// Cos term is included
 	// Integrated over a hemisphere of unit area
 	
-	Result sample(Sampler sampler, Vec3 n, Vec3 i);
+	Result sample(Sampler sampler, Vec3 n_, Vec3 i);
 	
 	
 	public static record Result (
@@ -22,8 +22,8 @@ public interface BSDF {
 	
 	
 	default BSDF mul(Color color) {
-		return (s, n, i) -> {
-			Result res = BSDF.this.sample(s, n, i);
+		return (s, n_, i) -> {
+			Result res = BSDF.this.sample(s, n_, i);
 			return new Result(res.out, res.color.mul(color));
 		};
 	}
@@ -32,10 +32,9 @@ public interface BSDF {
 	default BSDF mul(double k) {
 		return mul(Color.gray(k));
 	}
-		
-		
-	// ===================================================================================================
 	
+	
+	// ===================================================================================================
 	// Utility instances and factories.
 	
 	
@@ -44,10 +43,10 @@ public interface BSDF {
 		if (k == 0) return bsdf0;
 		if (k == 1) return bsdf1;
 		
-		return (sampler, n, i) ->
+		return (sampler, n_, i) ->
 				sampler.uniform() < k ?
-						bsdf1.sample(sampler, n, i) :
-						bsdf0.sample(sampler, n, i);
+						bsdf1.sample(sampler, n_, i) :
+						bsdf0.sample(sampler, n_, i);
 	}
 	
 	
@@ -86,7 +85,7 @@ public interface BSDF {
 		if (m == 2) return mix(bsdfs_[0], bsdfs_[1], 1 - weights_[0]);
 		
 		
-		return (sampler, n, i) -> {
+		return (sampler, n_, i) -> {
 			double u = sampler.uniform();
 			double s = 0;
 			int j = 0;
@@ -95,7 +94,7 @@ public interface BSDF {
 			}
 			j--;
 			
-			Result bsdfResult = bsdfs_[j].sample(sampler, n, i);
+			Result bsdfResult = bsdfs_[j].sample(sampler, n_, i);
 			return new Result(
 				bsdfResult.out(),
 				bsdfResult.color().div(weights_[j])
@@ -106,21 +105,21 @@ public interface BSDF {
 	
 	
 	
-	BSDF ABSORPTIVE = (sampler, n, i) -> Result.ABSORBED;
+	BSDF ABSORPTIVE = (sampler, n_, i) -> Result.ABSORBED;
 	
-	BSDF REFLECTIVE = (sampler, n, i) -> new Result(GeometryUtils.reflected(n, i), Color.WHITE);
+	BSDF REFLECTIVE = (sampler, n_, i) -> new Result(GeometryUtils.reflectedN(n_, i), Color.WHITE);
 	
 	BSDF TRANSMISSIVE = transmissive(Color.WHITE);
 	
 	
 	static BSDF transmissive(Color c) {
-		return (sampler, n, i) -> new Result(i.inverse(), c);
+		return (sampler, n_, i) -> new Result(i.inverse(), c);
 	}
 	
 	
 	static BSDF diffuse(Color c) {
-		return (sampler, n, i) -> new Result(
-				GeometryUtils.sampleHemisphereCosineDistributedRejection(sampler, n),
+		return (sampler, n_, i) -> new Result(
+				GeometryUtils.sampleHemisphereCosineDistributedRejectionN(sampler, n_),
 				c
 		);
 		
@@ -143,7 +142,7 @@ public interface BSDF {
 	
 	
 	static BSDF reflective(Color c) {
-		return (sampler, n, i) -> new Result(GeometryUtils.reflected(n, i), c);
+		return (sampler, n_, i) -> new Result(GeometryUtils.reflected(n_, i), c);
 	}
 	
 
@@ -151,8 +150,7 @@ public interface BSDF {
 	// NO : 1 = perfectly diffuse.
 	// YES: Reflected direction in expectation.
 	static BSDF glossy(Color c, double s) {
-		return (sampler, n, i) -> {
-			Vec3 n_ = n.normalized_();
+		return (sampler, n_, i) -> {
 			Vec3 r = GeometryUtils.reflected(n_, i);
 			Vec3 d = GeometryUtils.sampleHemisphereCosineDistributedRejectionN(sampler, n_);
 			
@@ -205,9 +203,8 @@ public interface BSDF {
 	
 	
 	static BSDF glossyRefractive(Color c, double refractiveIndex, double s) {
-		return (sampler, n, i) -> {
-			Vec3 n_ = n.normalized_();
-			Vec3 r = GeometryUtils.refracted(refractiveIndex, n_, i.normalized_());
+		return (sampler, n_, i) -> {
+			Vec3 r = GeometryUtils.refractedN(refractiveIndex, n_, i.normalized_());
 			Vec3 d = GeometryUtils.sampleHemisphereCosineDistributedRejectionN(sampler, n_).mul(Numeric.sign(n_.dot(r)));
 			
 			Vec3 b = r.div(r.dot(n_)).sub(n_);
@@ -237,7 +234,7 @@ public interface BSDF {
 	static BSDF refractive(Color c, double refractiveIndex) {
 		// To do: fresnel coefficients for the ratio between the refracted and the reflected part.
 
-		return (sampler, n, i) -> new Result(GeometryUtils.refracted(refractiveIndex, n, i), c);
+		return (sampler, n_, i) -> new Result(GeometryUtils.refractedN(refractiveIndex, n_, i), c);
 	}
 	
 	

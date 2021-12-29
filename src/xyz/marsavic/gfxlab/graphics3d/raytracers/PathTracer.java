@@ -41,8 +41,8 @@ public class PathTracer extends RayTracerSimple {
 		Color result = material.emittance();
 		
 		Vec3 i = ray.d().inverse();                              // Incoming direction
-		Vec3 n = collision.hit().n();                            // Normal to the body surface at the point of collision
-		BSDF.Result bsdfResult = material.bsdf().sample(sampler, n, i);
+		Vec3 n_ = collision.hit().n_();                          // Normalized normal to the body surface at the point of collision
+		BSDF.Result bsdfResult = material.bsdf().sample(sampler, n_, i);
 		
 		if (bsdfResult.color().notZero()) {
 			Vec3 p = ray.at(collision.hit().t());                // Point of collision

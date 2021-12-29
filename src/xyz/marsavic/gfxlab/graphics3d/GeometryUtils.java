@@ -28,7 +28,7 @@ public class GeometryUtils {
 	}
 	
 	
-	public static Vec3 refracted(double refractiveIndex, Vec3 n_, Vec3 i) {
+	public static Vec3 refractedN(double refractiveIndex, Vec3 n_, Vec3 i) {
 		double ri = refractiveIndex;
 		double k = 1;
 		double lI = i.length();

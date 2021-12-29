@@ -1,7 +1,9 @@
 package xyz.marsavic.gfxlab.graphics3d.scenes;
 
+import javafx.scene.shape.Sphere;
 import xyz.marsavic.gfxlab.Color;
 import xyz.marsavic.gfxlab.Vec3;
+import xyz.marsavic.gfxlab.graphics3d.BSDF;
 import xyz.marsavic.gfxlab.graphics3d.Body;
 import xyz.marsavic.gfxlab.graphics3d.Material;
 import xyz.marsavic.gfxlab.graphics3d.Scene;
@@ -11,7 +13,7 @@ import xyz.marsavic.gfxlab.graphics3d.solids.Ball;
 public class Oranges extends Scene.Base {
 	
 	public Oranges(int n, Material material) {
-		addAllFrom(new OpenRoomRGTextured());
+		addAllFrom(new OpenRoomRG_GI());
 		
 		double sqrt3 = Math.sqrt(3);
 		
@@ -32,10 +34,14 @@ public class Oranges extends Scene.Base {
 			}
 		}
 		
+		bodies.add(
+				Body.uniform(Ball.cr(Vec3.xyz(0.5, 0.5, 0.5), 0.4), Material.LIGHT)
+		);
 	}
 	
 	
 	public Oranges(int n) {
-		this(n, Material.GLASS.reflective(Color.gray(0.1)).specular(Color.WHITE));
+//		this(n, Material.GLASS.reflective(Color.gray(0.1)).specular(Color.WHITE));
+		this(n, new Material(BSDF.mix(BSDF.refractive(1.4), BSDF.REFLECTIVE, 0.05)));
 	}
 }

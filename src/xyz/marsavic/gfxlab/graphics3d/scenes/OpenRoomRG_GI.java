@@ -16,7 +16,7 @@ public class OpenRoomRG_GI extends Scene.Base {
 		Collections.addAll(bodies,
 				Body.uniform(HalfSpace.pn(Vec3.xyz( 1,  0,  0), Vec3.xyz(-1,  0,  0)), Material.matte(Color.hsb(0.0/3, 0.5, 0.7))),
 				Body.uniform(HalfSpace.pn(Vec3.xyz(-1,  0,  0), Vec3.xyz( 1,  0,  0)), Material.matte(Color.hsb(1.0/3, 0.5, 0.7))),
-				Body.uniform(HalfSpace.pn(Vec3.xyz( 0,  1,  0), Vec3.xyz( 0, -1,  0)), Material.BLACK.emittance(Color.WHITE)),
+				Body.uniform(HalfSpace.pn(Vec3.xyz( 0,  1,  0), Vec3.xyz( 0, -1,  0)), Material.matte(0.7)),
 				Body.uniform(HalfSpace.pn(Vec3.xyz( 0, -1,  0), Vec3.xyz( 0,  1,  0)), Material.matte(0.7)),
 				Body.uniform(HalfSpace.pn(Vec3.xyz( 0,  0,  1), Vec3.xyz( 0,  0, -1)), Material.matte(0.7))
 		);
